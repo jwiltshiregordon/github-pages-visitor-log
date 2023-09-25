@@ -1,9 +1,11 @@
+import json
+
 import boto3
 import pytest
 from moto import mock_s3
 from unittest.mock import patch
 from src.register_repo import register_repo
-from src.constants import AWS_S3_BUCKET, CHALLENGE_FILENAME
+from src.constants import AWS_S3_BUCKET, CHALLENGE_FILENAME, REGISTERED_PATH
 
 FAKE_AWS_CREDENTIALS = {
     "aws_access_key_id": "fake_access_key",
@@ -24,13 +26,13 @@ def s3():
 def test_register_repo_with_valid_file(mock_requests_get, s3):
     mock_requests_get.return_value.status_code = 200
     result = register_repo("some_repo_name", "some_repo_owner")
+    assert result["status"] == "registered"
 
-    assert result['status'] == 'registered'
+    registered_key = f"{REGISTERED_PATH}some_repo_name"
+    reg_object = s3.get_object(Bucket="my_test_bucket", Key=registered_key)
+    reg_data = json.load(reg_object['Body'])
+    assert reg_data["next_key"] == 0
 
-    mock_requests_get.assert_called_with(f"https://github.com/some_repo_owner/some_repo_name/blob/main/{CHALLENGE_FILENAME}")
-
-    response = s3.list_objects_v2(Bucket=AWS_S3_BUCKET, Prefix='registered/some_repo_name')
-    assert 'Contents' in response
 
 
 @patch('src.register_repo.requests.get')

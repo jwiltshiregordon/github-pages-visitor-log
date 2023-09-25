@@ -48,4 +48,4 @@ def log_message(repo_name, event_details):
     next_key = (next_key + 1) % 100
     s3.put_object(Bucket=AWS_S3_BUCKET, Key=f"{REGISTERED_PATH}{repo_name}", Body=json.dumps({"next_key": next_key}))
 
-    return {"status": "success"}
+    return {"status": "logged"}

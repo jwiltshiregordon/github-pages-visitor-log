@@ -56,7 +56,7 @@ def test_log_message_valid_registration(mock_requests_get, s3):
 
     # Test the log_message function
     result = log_message("some_repo_name", "Test message 1")
-    assert result["status"] == "success"
+    assert result["status"] == "logged"
 
     # Check if next_key has been updated
     registered_key = f"{REGISTERED_PATH}some_repo_name"

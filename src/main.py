@@ -39,7 +39,3 @@ def fetch():
 
     response = fetch_logs(repo_name)
     return jsonify(response)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

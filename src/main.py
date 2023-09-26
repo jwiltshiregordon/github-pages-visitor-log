@@ -27,6 +27,7 @@ def log():
     event_details = data.get('event_details')
 
     response = log_message(repo_owner, repo_name, event_details)
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return jsonify(response)
 
 

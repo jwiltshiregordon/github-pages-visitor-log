@@ -2,24 +2,27 @@ import json
 import boto3
 import requests
 from .constants import AWS_S3_BUCKET, REGISTERED_PATH, LOGS_PATH, CHALLENGE_FILENAME
+from .utils import get_registration_key, get_log_key, check_registration
 
 
-def register_repo(repo_name, repo_owner):
+def register_repo(repo_owner, repo_name):
     s3 = boto3.client("s3")
     blob_url = f"https://github.com/{repo_owner}/{repo_name}/blob/main/{CHALLENGE_FILENAME}"
     r = requests.get(blob_url)
 
-    registered_key = f"{REGISTERED_PATH}{repo_name}"
-    log_key = f"{LOGS_PATH}{repo_name}"
+    registered_key = get_registration_key(repo_owner, repo_name)
 
     response = {}
 
     if r.status_code == 404:
-        s3.delete_object(Bucket=AWS_S3_BUCKET, Key=registered_key)
-        s3.delete_object(Bucket=AWS_S3_BUCKET, Key=log_key)
+        if check_registration(s3, repo_owner, repo_name):
+            s3.delete_object(Bucket=AWS_S3_BUCKET, Key=registered_key)
+            for index in range(100):
+                log_key = get_log_key(s3, repo_owner, repo_name)
+                s3.delete_object(Bucket=AWS_S3_BUCKET, Key=log_key)
         response["status"] = "unregistered"
         response["message"] = f"File {CHALLENGE_FILENAME} not found in repository. Unregistered the repo."
-    else:
+    elif r.status_code == 200:
         s3.put_object(Bucket=AWS_S3_BUCKET, Key=registered_key, Body=json.dumps({"next_key": 0}))
         response["status"] = "registered"
         response["message"] = "Successfully registered the repository."

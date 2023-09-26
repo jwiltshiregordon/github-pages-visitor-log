@@ -37,18 +37,18 @@ def setup_requests():
 def test_full_workflow(client, mock_s3_client, setup_requests):
     # Step 1: Register repo
     setup_requests.return_value.status_code = 200  # Simulate that sentinel file exists
-    response = client.post('/register', json={'repo_name': 'some_repo_name', 'repo_owner': 'some_repo_owner'})
+    response = client.post('/register', json={'repo_owner': 'some_repo_owner', 'repo_name': 'some_repo_name'})
     assert response.status_code == 200
     assert response.get_json()["status"] == "registered"
 
     # Step 2: Send some messages
     for i in range(3):
-        response = client.post('/log', json={'repo_name': 'some_repo_name', 'event_details': f'Test message {i}'})
+        response = client.post('/log', json={'repo_owner': 'some_repo_owner', 'repo_name': 'some_repo_name', 'event_details': f'Test message {i}'})
         assert response.status_code == 200
         assert response.get_json()["status"] == "logged"
 
     # Step 3: Fetch logs
-    response = client.get('/fetch-logs', query_string={'repo_name': 'some_repo_name'})
+    response = client.get('/fetch-logs', query_string={'repo_owner': 'some_repo_owner', 'repo_name': 'some_repo_name'})
     assert response.status_code == 200
     expected_logs = ["Test message 2", "Test message 1", "Test message 0"]
     assert [entry["event_details"] for entry in response.get_json()["logs"]] == expected_logs

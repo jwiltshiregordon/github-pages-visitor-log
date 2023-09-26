@@ -28,15 +28,16 @@ def s3():
 @patch('src.register_repo.requests.get')
 def test_fetch_logs_valid_registration(mock_requests_get, s3):
     mock_requests_get.return_value.status_code = 200
-    result = register_repo("some_repo_name", "some_repo_owner")
+    result = register_repo("some_repo_owner", "some_repo_name")
     assert result["status"] == "registered"
 
     # Log some messages
-    log_message("some_repo_name", "Test message 1")
-    log_message("some_repo_name", "Test message 2")
+    log_message("some_repo_owner", "some_repo_name", "Test message 1")
+    log_message("some_repo_owner", "some_repo_name", "Test message 2")
 
     # Fetch logs and verify
-    result = fetch_logs("some_repo_name")
+    result = fetch_logs("some_repo_owner", "some_repo_name")
 
     assert result["status"] == "success"
+    print(result)
     assert [entry["event_details"] for entry in result["logs"]] == ["Test message 2", "Test message 1"]

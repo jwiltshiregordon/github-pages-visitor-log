@@ -25,21 +25,19 @@ def s3():
 @patch('src.register_repo.requests.get')
 def test_register_repo_with_valid_file(mock_requests_get, s3):
     mock_requests_get.return_value.status_code = 200
-    result = register_repo("some_repo_name", "some_repo_owner")
+    result = register_repo("some_repo_owner", "some_repo_name")
     assert result["status"] == "registered"
 
-    registered_key = f"{REGISTERED_PATH}some_repo_name"
+    registered_key = f"{REGISTERED_PATH}some_repo_owner/some_repo_name"
     reg_object = s3.get_object(Bucket="my_test_bucket", Key=registered_key)
     reg_data = json.load(reg_object['Body'])
     assert reg_data["next_key"] == 0
 
 
-
 @patch('src.register_repo.requests.get')
 def test_register_repo_with_missing_file(mock_requests_get, s3):
     mock_requests_get.return_value.status_code = 404
-    result = register_repo("some_repo_name", "some_repo_owner")
-
+    result = register_repo("some_repo_owner", "some_repo_name")
     assert result['status'] == 'unregistered'
 
     mock_requests_get.assert_called_with(f"https://github.com/some_repo_owner/some_repo_name/blob/main/{CHALLENGE_FILENAME}")

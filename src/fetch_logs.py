@@ -2,7 +2,7 @@ import json
 
 import boto3
 from botocore.exceptions import ClientError
-from .constants import AWS_S3_BUCKET, REGISTERED_PATH, LOGS_PATH  # Adjust the import as needed
+from .constants import AWS_S3_BUCKET
 from .utils import get_registration_key, get_log_key
 
 

@@ -60,11 +60,11 @@ def test_log_message_valid_registration(mock_requests_get, s3):
 
     # Check if next_key has been updated
     registered_key = f"{REGISTERED_PATH}some_repo_owner/some_repo_name"
-    reg_object = s3.get_object(Bucket="my_test_bucket", Key=registered_key)
+    reg_object = s3.get_object(Bucket=AWS_S3_BUCKET, Key=registered_key)
     reg_data = json.load(reg_object['Body'])
     assert reg_data["next_key"] == 1
 
     # Check if log message is correctly stored
     log_key = f"{LOGS_PATH}some_repo_owner/some_repo_name/00"
-    log_data = json.loads(s3.get_object(Bucket="my_test_bucket", Key=log_key)['Body'].read().decode('utf-8'))
+    log_data = json.loads(s3.get_object(Bucket=AWS_S3_BUCKET, Key=log_key)['Body'].read().decode('utf-8'))
     assert log_data["event_details"] == "Test message 1"

@@ -2,7 +2,7 @@ import boto3
 import json
 from datetime import datetime
 from botocore.exceptions import ClientError
-from .constants import AWS_S3_BUCKET, LOGS_PATH, REGISTERED_PATH, NOT_REGISTERED
+from .constants import AWS_S3_BUCKET, NOT_REGISTERED
 from .utils import get_registration_key, get_log_key, check_registration
 
 

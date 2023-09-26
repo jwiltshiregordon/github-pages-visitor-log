@@ -29,7 +29,7 @@ def test_register_repo_with_valid_file(mock_requests_get, s3):
     assert result["status"] == "registered"
 
     registered_key = f"{REGISTERED_PATH}some_repo_owner/some_repo_name"
-    reg_object = s3.get_object(Bucket="my_test_bucket", Key=registered_key)
+    reg_object = s3.get_object(Bucket=AWS_S3_BUCKET, Key=registered_key)
     reg_data = json.load(reg_object['Body'])
     assert reg_data["next_key"] == 0
 

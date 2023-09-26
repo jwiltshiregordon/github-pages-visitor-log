@@ -1,5 +1,3 @@
-import json
-
 import boto3
 import pytest
 from moto import mock_s3
@@ -7,7 +5,7 @@ from unittest.mock import patch
 
 from src.fetch_logs import fetch_logs
 from src.log_message import log_message
-from src.constants import AWS_S3_BUCKET, REGISTERED_PATH, LOGS_PATH, NOT_REGISTERED
+from src.constants import AWS_S3_BUCKET
 from src.register_repo import register_repo
 
 FAKE_AWS_CREDENTIALS = {

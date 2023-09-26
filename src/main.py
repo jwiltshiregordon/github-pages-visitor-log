@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 from src.register_repo import register_repo
 from src.log_message import log_message
 from src.fetch_logs import fetch_logs
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/register', methods=['POST'])
@@ -27,7 +29,6 @@ def log():
     event_details = data.get('event_details')
 
     response = log_message(repo_owner, repo_name, event_details)
-    response.headers.add('Access-Control-Allow-Origin', '*')
     return jsonify(response)
 
 

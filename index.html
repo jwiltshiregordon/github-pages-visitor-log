@@ -108,35 +108,37 @@
                 case 'show':
                     const scriptContent = `
 <script>
-    function logVisitorMessage(event_details) {
-        const repoOwner = "${document.getElementById('repoOwner').value}";
-        const repoName = "${document.getElementById('repoName').value}";
+  logVisitorMessage("Someone visited my github pages website!");
 
-        const data = {
-            repo_owner: repoOwner,
-            repo_name: repoName,
-            event_details: event_details
-        };
+  function logVisitorMessage(event_details) {
+    const repoOwner = "${document.getElementById('repoOwner').value}";
+    const repoName = "${document.getElementById('repoName').value}";
 
-        fetch('https://api.github-pages-visitor-log.net/log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                console.log('Message logged successfully:', data);
-            } else {
-                console.error('Error logging message:', data);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }\n</script` + '>';
+    const data = {
+      repo_owner: repoOwner,
+      repo_name: repoName,
+      event_details: event_details
+    };
+
+    fetch('https://api.github-pages-visitor-log.net/log', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        console.log('Message logged successfully:', data);
+      } else {
+        console.error('Error logging message:', data);
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }\n</script` + '>';
 
                     document.getElementById('output-code').textContent = scriptContent;
                     break;
@@ -177,7 +179,7 @@
                 <li class="list-group-item">1. A public github repository signals participation by placing a sentinel file <code>.github-pages-visitor-log</code>
                 at the repository root. Select "Update Registration"</li>
                 <li class="list-group-item">2. The logs of any registered repo are public. Select "View Logs"</li>
-                <li class="list-group-item">3. Send messages from your site using javascript. To see the script tag you'll need to add to your html, select "Show Scripts"</li>
+                <li class="list-group-item">3. Send messages from your site using javascript. To see the script tag you'll need to add to your html, select "Show Script"</li>
             </ol>
             <form id="apiForm">
                 <div class="form-group bg-light p-3 rounded" style="width: fit-content; margin: auto;">
@@ -190,7 +192,7 @@
                     <div class="form-group bg-light rounded d-flex mt-3" style="justify-content: space-between">
                         <button type="button" class="btn btn-primary" onclick="handleButtonClick('update')">Update Registration</button>
                         <button type="button" class="btn btn-primary" onclick="handleButtonClick('view')">View Logs</button>
-                        <button type="button" class="btn btn-primary" onclick="handleButtonClick('show')">Show Scripts</button>
+                        <button type="button" class="btn btn-primary" onclick="handleButtonClick('show')">Show Script</button>
                     </div>
                 </div>
             </form>

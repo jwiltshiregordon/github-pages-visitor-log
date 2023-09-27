@@ -7,9 +7,12 @@ from .utils import get_registration_key, get_log_key, check_registration
 
 def register_repo(repo_owner, repo_name):
     s3 = boto3.client("s3")
-    # TODO allow default branches besides main
+    # TODO allow default branches besides main and master
     blob_url = f"https://github.com/{repo_owner}/{repo_name}/blob/main/{CHALLENGE_FILENAME}"
     r = requests.get(blob_url)
+    if r.status_code == 404:
+        blob_url = f"https://github.com/{repo_owner}/{repo_name}/blob/master/{CHALLENGE_FILENAME}"
+        r = requests.get(blob_url)
 
     registered_key = get_registration_key(repo_owner, repo_name)
 

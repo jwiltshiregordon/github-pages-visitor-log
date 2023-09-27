@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 import boto3
 from botocore.exceptions import ClientError
@@ -18,14 +19,20 @@ def fetch_logs(repo_owner, repo_name):
         return {"status": "error", "message": e.response['Error']['Message']}
 
     logs = []
-    for index in range(100):  # Get the last 100 log messages
-        cur_key = (next_key - 1 - index) % 100
-        log_key = get_log_key(repo_owner, repo_name, cur_key)
+    log_keys = [get_log_key(repo_owner, repo_name, (next_key - 1 - i) % 100) for i in range(100)]
 
+    def fetch_log(log_key):
         try:
             log_data = s3.get_object(Bucket=AWS_S3_BUCKET, Key=log_key)['Body'].read().decode('utf-8')
-            logs.append(json.loads(log_data))
+            return json.loads(log_data)
         except ClientError as e:
-            continue
+            return None
 
-    return {"status": "success", "logs": logs}
+    with ThreadPoolExecutor() as executor:
+        for log in executor.map(fetch_log, log_keys):
+            if log is not None:
+                logs.append(log)
+
+    print("I did it!")
+    print(logs)
+    return logs

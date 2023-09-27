@@ -40,7 +40,10 @@ def test_register_repo_with_missing_file(mock_requests_get, s3):
     result = register_repo("some_repo_owner", "some_repo_name")
     assert result['status'] == 'unregistered'
 
-    mock_requests_get.assert_called_with(f"https://github.com/some_repo_owner/some_repo_name/blob/main/{CHALLENGE_FILENAME}")
+    mock_requests_get.assert_any_call(
+        f"https://github.com/some_repo_owner/some_repo_name/blob/main/{CHALLENGE_FILENAME}")
+    mock_requests_get.assert_any_call(
+        f"https://github.com/some_repo_owner/some_repo_name/blob/master/{CHALLENGE_FILENAME}")
 
     response = s3.list_objects_v2(Bucket=AWS_S3_BUCKET, Prefix='registered/some_repo_name')
     assert 'Contents' not in response

@@ -27,6 +27,7 @@
 
         .output-box {
             background-color: mintcream;
+            display: none;
             margin: 20px;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -60,21 +61,87 @@
 
     </style>
     <script>
+
+        function formatLogsForDisplay(logs) {
+            let formattedLogs = [];
+            logs.forEach(log => {
+                let details = log.event_details.split('\n').join('\t');
+                formattedLogs.push(`${log.repo_name}\t${log.timestamp}\t${details}`);
+            });
+            return formattedLogs.join('\n');
+        }
+
+
         function handleButtonClick(action) {
             const repoOwner = document.getElementById('repoOwner').value;
             const repoName = document.getElementById('repoName').value;
+            const outputBox = document.getElementById('output-box');
+            const outputCode = document.getElementById('output-code');
+            const apiUrlBase = 'https://api.github-pages-visitor-log.net';
 
             switch(action) {
                 case 'update':
-                    console.log("Updating registration for", repoOwner, repoName);
+                    fetch(apiUrlBase + '/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            repo_owner: repoOwner,
+                            repo_name: repoName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        outputCode.textContent = JSON.stringify(data, null, 2);
+                    });
                     break;
+
                 case 'view':
-                    console.log("Viewing logs for", repoOwner, repoName);
+                    fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('output-code').textContent = formatLogsForDisplay(data.logs);
+                    });
                     break;
+
                 case 'show':
-                    console.log("Showing scripts for", repoOwner, repoName);
+                    const scriptContent = `
+<script>
+    function logVisitorMessage(event_details) {
+        const repoOwner = "${document.getElementById('repoOwner').value}";
+        const repoName = "${document.getElementById('repoName').value}";
+
+        const data = {
+            repo_owner: repoOwner,
+            repo_name: repoName,
+            event_details: event_details
+        };
+
+        fetch('https://api.github-pages-visitor-log.net/log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Message logged successfully:', data);
+            } else {
+                console.error('Error logging message:', data);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }\n</script` + '>';
+
+                    document.getElementById('output-code').textContent = scriptContent;
                     break;
             }
+            outputBox.style.display = "block";
         }
     </script>
 </head>
@@ -129,16 +196,12 @@
             </form>
         </div>
 
-        <div class="output-box mt-4 card">
+        <div id="output-box" class="output-box mt-4 card">
             <div class="card-header">
                 Output
             </div>
             <div class="card-body">
-                <pre><code>
-Dummy output line 1
-Dummy output line 2
-...
-Dummy output line N
+                <pre><code id="output-code">
                 </code></pre>
             </div>
         </div>

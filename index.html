@@ -79,6 +79,8 @@
             const outputCode = document.getElementById('output-code');
             const apiUrlBase = 'https://api.github-pages-visitor-log.net';
 
+            document.getElementById('output-code').textContent = "loading...";
+
             switch(action) {
                 case 'update':
                     fetch(apiUrlBase + '/register', {

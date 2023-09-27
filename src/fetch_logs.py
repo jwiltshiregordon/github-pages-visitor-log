@@ -33,6 +33,4 @@ def fetch_logs(repo_owner, repo_name):
             if log is not None:
                 logs.append(log)
 
-    print("I did it!")
-    print(logs)
-    return logs
+    return {"status": "success", "logs": logs}

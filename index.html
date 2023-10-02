@@ -112,7 +112,7 @@
 
               case 'show':
                   const scriptTag = "script";
-                  let scriptBody = (await fetch('./snippets/client.js')).text();
+                  let scriptBody = await (await fetch('./snippets/client.js')).text();
                   scriptBody = scriptBody.replace("REPO_OWNER", repoOwner);
                   scriptBody = scriptBody.replace("REPO_NAME", repoName);
                   const scriptContent = `<${scriptTag}>${scriptBody}<\/${scriptTag}>`

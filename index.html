@@ -143,21 +143,23 @@
               public. This way you can tell if/how people are using your site, and it's totally above-board
               what you're doing and who can see it.
             </p>
-            <p class="">
+            <p>
                 Currently, only the last 100 messages are retained for any participating repository.
             </p>
 
           <p>
             Naturally, this site is hosted by github pages. Here are the recent logs:
-            <div id="github-pages-log-container" style="font-family: Arial, sans-serif; border: 1px solid #ccc; padding: 10px; width: 800px; min-height: 80px; max-height: 600px; box-shadow: 3px 3px 5px #aaa; margin: 10px; border-radius: 5px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-weight: bold;">Recent messages</span>
-                <span style="font-size: 0.8em;">courtesy of the <a href="https://github.com/jwiltshiregordon/github-pages-visitor-log" style="color: #007BFF; text-decoration: none;">github pages visitor log</a> project</span>
-                <button onclick="writeLogsToElement()" style="background-color: #007BFF; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Refresh</button>
-              </div>
-              <div id="github-pages-log-element" style="border-top: 1px solid #ccc; padding-top: 10px;"></div>
-            </div>
           </p>
+
+          <div id="github-pages-log-container" style="font-family: Arial, sans-serif; border: 1px solid #ccc; padding: 10px; width: 800px; min-height: 80px; max-height: 600px; box-shadow: 3px 3px 5px #aaa; margin: 10px; border-radius: 5px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span style="font-weight: bold;">Recent messages</span>
+              <span style="font-size: 0.8em;">courtesy of the <a href="https://github.com/jwiltshiregordon/github-pages-visitor-log" style="color: #007BFF; text-decoration: none;">github pages visitor log</a> project</span>
+              <button onclick="writeLogsToElement()" style="background-color: #007BFF; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Refresh</button>
+            </div>
+            <div id="github-pages-log-element" style="border-top: 1px solid #ccc; padding-top: 10px;"></div>
+          </div>
+
           <p>
               If you log more than the default "someone visited" message, we recommend that you do display
               the recent logs so that your visitors know what's being recorded.
@@ -201,6 +203,48 @@
         </div>
 
     </div>
+
+    <script>
+    const repoOwner = "jwiltshiregordon";
+    const repoName = "github-pages-visitor-log";
+
+    logVisitorMessage(`Someone visited my github pages website ${repoOwner}/${repoName}`);
+
+    function logVisitorMessage(event_details) {
+      const data = {
+        repo_owner: repoOwner,
+        repo_name: repoName,
+        event_details: event_details
+      };
+
+      fetch('https://api.github-pages-visitor-log.net/log', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          console.log('Message logged successfully:', data);
+        } else {
+          console.error('Error logging message:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
+
+    function writeLogsToElement(logsElementId = "github-pages-log-element") {
+      fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)
+      .then(response => response.json())
+      .then(data => {
+          document.getElementById(logsElementId).textContent = formatLogsForDisplay(data.logs);
+      });
+    }
+    </script>
 </body>
 
 </html>

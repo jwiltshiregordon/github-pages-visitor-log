@@ -90,7 +90,7 @@
                     break;
 
                 case 'view':
-                    writeLogsToElement('output-code');
+                    writeLogsToElement('output-code', repoOwner, repoName);
                     break;
 
               case 'show':
@@ -229,12 +229,12 @@
       logs.forEach(log => {
         let details = log.event_details.split('\n').join('\t');
         let timeAgo = moment.utc(log.timestamp).fromNow();
-        formattedLogs.push(`${log.repo_name}\t${timeAgo}\t${details}`);
+        formattedLogs.push(`${timeAgo}\t\t${details}`);
       });
       return formattedLogs.join('\n');
     }
 
-    function writeLogsToElement(logsElementId = "github-pages-log-element") {
+    function writeLogsToElement(logsElementId = "github-pages-log-element", repoOwner = repoOwner, repoName = repoName) {
       const apiUrlBase = 'https://api.github-pages-visitor-log.net';
       document.getElementById(logsElementId).textContent = "loading...";
       fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)

@@ -75,7 +75,7 @@
         }
 
 
-        function handleButtonClick(action) {
+        async function handleButtonClick(action) {
             const repoOwner = document.getElementById('repoOwner').value;
             const repoName = document.getElementById('repoName').value;
             const outputBox = document.getElementById('output-box');
@@ -110,43 +110,14 @@
                     });
                     break;
 
-                case 'show':
-                    const scriptContent = `
-<script>
-  logVisitorMessage("Someone visited my github pages website!");
-
-  function logVisitorMessage(event_details) {
-    const repoOwner = "${document.getElementById('repoOwner').value}";
-    const repoName = "${document.getElementById('repoName').value}";
-
-    const data = {
-      repo_owner: repoOwner,
-      repo_name: repoName,
-      event_details: event_details
-    };
-
-    fetch('https://api.github-pages-visitor-log.net/log', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        console.log('Message logged successfully:', data);
-      } else {
-        console.error('Error logging message:', data);
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }\n</script` + '>';
-
-                    document.getElementById('output-code').textContent = scriptContent;
-                    break;
+              case 'show':
+                  const scriptTag = "script";
+                  let scriptBody = (await fetch('./snippets/client.js')).text();
+                  scriptBody = scriptBody.replace("REPO_OWNER", repoOwner);
+                  scriptBody = scriptBody.replace("REPO_NAME", repoName);
+                  const scriptContent = `<${scriptTag}>${scriptBody}<\/${scriptTag}>`
+                  document.getElementById('output-code').textContent = scriptContent;
+                  break;
             }
             outputBox.style.display = "block";
         }

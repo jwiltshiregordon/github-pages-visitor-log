@@ -3,6 +3,7 @@ const repoOwner = "REPO_OWNER";
 const repoName = "REPO_NAME";
 
 logVisitorMessage(`Someone visited my github pages website ${repoOwner}/${repoName}`);
+writeLogsToElement();
 
 function logVisitorMessage(event_details) {
   const apiUrlBase = 'https://api.github-pages-visitor-log.net';

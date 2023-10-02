@@ -1,9 +1,10 @@
-logVisitorMessage("Someone visited my github pages website!");
+
+const repoOwner = "REPO_OWNER";
+const repoName = "REPO_NAME";
+
+logVisitorMessage(`Someone visited my github pages website ${repoOwner}/${repoName}`);
 
 function logVisitorMessage(event_details) {
-  const repoOwner = "REPO_OWNER";
-  const repoName = "REPO_NAME";
-
   const data = {
     repo_owner: repoOwner,
     repo_name: repoName,
@@ -30,3 +31,10 @@ function logVisitorMessage(event_details) {
   });
 }
 
+function writeLogsToElement(logsElementId = "github-pages-log-element") {
+  fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)
+  .then(response => response.json())
+  .then(data => {
+      document.getElementById(logsElementId).textContent = formatLogsForDisplay(data.logs);
+  });
+}

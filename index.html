@@ -116,7 +116,8 @@
                   scriptBody = scriptBody.replace("REPO_OWNER", repoOwner);
                   scriptBody = scriptBody.replace("REPO_NAME", repoName);
                   const scriptContent = `<${scriptTag}>${scriptBody}<\/${scriptTag}>`
-                  document.getElementById('output-code').textContent = scriptContent;
+                  let logsTag = await (await fetch('./snippets/logs.html')).text();
+                  document.getElementById('output-code').textContent = scriptContent + '\n\n' + logsTag;
                   break;
             }
             outputBox.style.display = "block";
@@ -128,14 +129,14 @@
     <div class="container">
         <div class="content-area">
             <h1>GitHub Pages Visitor Log</h1>
-            <h4>A free, open source alternative to Google Analytics for GitHub Pages</h4>
+            <h4>An open source page activity tracker for GitHub Pages</h4>
         </div>
 
         <div class="content-area">
             <h3>Log info about page views and interactions</h3>
             <p class="">
-              This project helps record visitor information on GitHub Pages sites. Participation is free.
-              Google Analytics is another free option, but then the user data is sent to Google for unknown, and presumably
+              <b>Participation is free.</b>
+              Google Analytics is another "free" option, but then the user data is sent to Google for unknown, and presumably
               monetizable, purposes.
               This project is a little different. You generate messages using js on the page, and then
               post them to <code>api.github-pages-visitor-log.net/log</code> where they become viewable by the
@@ -146,6 +147,21 @@
                 Currently, only the last 100 messages are retained for any participating repository.
             </p>
 
+          <p>
+            Naturally, this site is hosted by github pages. Here are the recent logs:
+            <div id="github-pages-log-container" style="font-family: Arial, sans-serif; border: 1px solid #ccc; padding: 10px; width: 800px; min-height: 80px; max-height: 600px; box-shadow: 3px 3px 5px #aaa; margin: 10px; border-radius: 5px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-weight: bold;">Recent messages</span>
+                <span style="font-size: 0.8em;">courtesy of the <a href="https://github.com/jwiltshiregordon/github-pages-visitor-log" style="color: #007BFF; text-decoration: none;">github pages visitor log</a> project</span>
+                <button onclick="writeLogsToElement()" style="background-color: #007BFF; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Refresh</button>
+              </div>
+              <div id="github-pages-log-element" style="border-top: 1px solid #ccc; padding-top: 10px;"></div>
+            </div>
+          </p>
+          <p>
+              If you log more than the default "someone visited" message, we recommend that you do display
+              the recent logs so that your visitors know what's being recorded.
+          </p>
         </div>
 
 

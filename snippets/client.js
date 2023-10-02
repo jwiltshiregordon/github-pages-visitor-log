@@ -43,7 +43,7 @@ function formatLogsForDisplay(logs) {
   return formattedLogs.join('\n');
 }
 
-function writeLogsToElement(logsElementId = "github-pages-log-element", repoOwner = repoOwner, repoName = repoName) {
+function writeLogsToElement(logsElementId = "github-pages-log-element", repoOwner = "REPO_OWNER", repoName = "REPO_NAME") {
   const apiUrlBase = 'https://api.github-pages-visitor-log.net';
   document.getElementById(logsElementId).textContent = "loading...";
   fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)

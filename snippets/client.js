@@ -46,7 +46,8 @@ function formatLogsForDisplay(logs) {
 function writeLogsToElement(logsElementId = "github-pages-log-element", repoOwner = "REPO_OWNER", repoName = "REPO_NAME") {
   const apiUrlBase = 'https://api.github-pages-visitor-log.net';
   document.getElementById(logsElementId).textContent = "loading...";
-  fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)
+  new Promise(resolve => setTimeout(resolve, 1500))
+  .then(() => fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName))
   .then(response => response.json())
   .then(data => {
       document.getElementById(logsElementId).textContent = formatLogsForDisplay(data.logs);

@@ -96,8 +96,8 @@
               case 'show':
                   const scriptTag = "script";
                   let scriptBody = await (await fetch('./snippets/client.js')).text();
-                  scriptBody = scriptBody.replace("REPO_OWNER", repoOwner);
-                  scriptBody = scriptBody.replace("REPO_NAME", repoName);
+                  scriptBody = scriptBody.replaceAll("REPO_OWNER", repoOwner);
+                  scriptBody = scriptBody.replaceAll("REPO_NAME", repoName);
                   const scriptContent = `<${scriptTag}>${scriptBody}<\/${scriptTag}>`
                   let logsTag = await (await fetch('./snippets/logs.html')).text();
                   document.getElementById('output-code').textContent = scriptContent + '\n\n' + logsTag;

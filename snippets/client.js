@@ -33,6 +33,16 @@ function logVisitorMessage(event_details) {
   });
 }
 
+function formatLogsForDisplay(logs) {
+  let formattedLogs = [];
+  logs.forEach(log => {
+    let details = log.event_details.split('\n').join('\t');
+    let timeAgo = moment.utc(log.timestamp).fromNow();
+    formattedLogs.push(`${log.repo_name}\t${timeAgo}\t${details}`);
+  });
+  return formattedLogs.join('\n');
+}
+
 function writeLogsToElement(logsElementId = "github-pages-log-element") {
   const apiUrlBase = 'https://api.github-pages-visitor-log.net';
   document.getElementById(logsElementId).textContent = "loading...";

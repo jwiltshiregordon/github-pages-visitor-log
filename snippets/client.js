@@ -22,7 +22,7 @@ function logVisitorMessage(event_details) {
   })
   .then(response => response.json())
   .then(data => {
-    if (data.status === 'success') {
+    if (data.status === 'logged') {
       console.log('Message logged successfully:', data);
     } else {
       console.error('Error logging message:', data);

@@ -4,9 +4,8 @@ const repoName = "REPO_NAME";
 
 logVisitorMessage(`Someone visited my github pages website ${repoOwner}/${repoName}`);
 
-const apiUrlBase = 'https://api.github-pages-visitor-log.net';
-
 function logVisitorMessage(event_details) {
+  const apiUrlBase = 'https://api.github-pages-visitor-log.net';
   const data = {
     repo_owner: repoOwner,
     repo_name: repoName,
@@ -34,6 +33,7 @@ function logVisitorMessage(event_details) {
 }
 
 function writeLogsToElement(logsElementId = "github-pages-log-element") {
+  const apiUrlBase = 'https://api.github-pages-visitor-log.net';
   document.getElementById(logsElementId).textContent = "loading...";
   fetch(apiUrlBase + '/fetch-logs?repo_owner=' + repoOwner + '&repo_name=' + repoName)
   .then(response => response.json())

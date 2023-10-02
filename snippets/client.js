@@ -38,7 +38,7 @@ function formatLogsForDisplay(logs) {
   logs.forEach(log => {
     let details = log.event_details.split('\n').join('\t');
     let timeAgo = moment.utc(log.timestamp).fromNow();
-    formattedLogs.push(`${timeAgo}\t\t${details}`);
+    formattedLogs.push(`${timeAgo.padEnd(22, ' ')}${details}`);
   });
   return formattedLogs.join('\n');
 }

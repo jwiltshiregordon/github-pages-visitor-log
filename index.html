@@ -157,9 +157,9 @@
             <h3>Get started</h3>
             <ol class="">
                 <li class="list-group-item">1. A public github repository signals participation by placing a sentinel file <code>.github-pages-visitor-log</code>
-                at the repository root. Select "Update Registration"</li>
-                <li class="list-group-item">2. The logs of any registered repo are public. Select "View Logs"</li>
-                <li class="list-group-item">3. Send messages from your site using javascript. To see the script tag you'll need to add to your html, select "Show Script"</li>
+                at the repository root. Use "Update Registration"</li>
+                <li class="list-group-item">2. The logs of any registered repo are public. Use "View Logs"</li>
+                <li class="list-group-item">3. Send messages from your site using javascript. To see the elements you'll need to add to your html, use "Show HTML"</li>
             </ol>
             <form id="apiForm">
                 <div class="form-group bg-light p-3 rounded" style="width: fit-content; margin: auto;">
@@ -229,7 +229,7 @@
       logs.forEach(log => {
         let details = log.event_details.split('\n').join('\t');
         let timeAgo = moment.utc(log.timestamp).fromNow();
-        formattedLogs.push(`${timeAgo}\t\t${details}`);
+        formattedLogs.push(`${timeAgo.padEnd(22, ' ')}${details}`);
       });
       return formattedLogs.join('\n');
     }
